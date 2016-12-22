@@ -1,0 +1,1 @@
+BioBlocks is a web-based visual editor for describing experiments in Biology. It is based on Google's Blockly and MIT Scratch. This project has a general focus and is not intended to be compatible with any particular automatization language.
