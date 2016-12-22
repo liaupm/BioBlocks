@@ -1,19 +1,11 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politï¿½cnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file Special function of electrophoresis. Include special inputs for the electrophoresis function.
- * @author Vishal Gupta, Jesï¿½s Irimia, Ivï¿½n Pau, Alfonso Rodrï¿½guez-Patï¿½n, ï¿½ngel Panizo <contactLIAUPM@gmail.com>
- */
+/***************************************************************************************************************************************************************/
+/* Name: electrophoresis.js																																	   */
+/* Developer: Jesús Irimia																																	   */
+/* Function: Special function of electrophoresis. Include special inputs for the electrophoresis function.						                                   */	
+/*																																							   */
+/*														 																						               */
+/***************************************************************************************************************************************************************/		
+/***************************************************************************************************************************************************************/
 Blockly.Blocks['electrophoresis'] = {
 	
 	init: function() {
@@ -37,7 +29,7 @@ Blockly.Blocks['electrophoresis'] = {
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("time of operation")
-		    .appendField(new Blockly.FieldNumber("0"), "timeOfOperation");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "timeOfOperation");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("ladder")
@@ -50,12 +42,10 @@ Blockly.Blocks['electrophoresis'] = {
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("duration")
-		    .appendField(new Blockly.FieldNumber("0"), "DURATION")
-		    .appendField(new Blockly.FieldDropdown([["Minutes", "minutes"], ["Milliseconds", "milliseconds"], ["Seconds", "seconds"], ["Hours", "hours"]]), "Unit_Time");
-		
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "DURATION")
+		    .appendField(new Blockly.FieldDropdown([["Minutes", "minute"], ["Millisecond", "millisecond"], ["Seconds", "second"], ["Hours", "hour"]]), "Unit_Time");
 		this.appendValueInput("DATAREFERENCE")
 		    .setAlign(Blockly.ALIGN_RIGHT)
-			.setCheck("String")
 	    	.appendField("data reference");
 		           
 	},
@@ -73,9 +63,8 @@ Blockly.Blocks['electrophoresis'] = {
 		if( this.getFieldValue('FIELDSTRENGTH')!=null){
 			currentCode= currentCode + '                 "field_strength": " ' +this.getFieldValue("FIELDSTRENGTH") +'", \n';
 		}
-		if(this.getInput('DATAREFERENCE')!=null){
-			var dataReference = Blockly.JavaScript.valueToCode(this, 'DATAREFERENCE', Blockly.JavaScript.ORDER_NONE);
-			currentCode= currentCode + '                 "dataref": " ' + dataReference +'", \n';
+		if(this.getInputTargetBlock('DATAREFERENCE')!=null){
+			currentCode= currentCode + '                 "dataref": " ' +this.getInputTargetBlock("DATAREFERENCE").getFieldValue('NUM') +'", \n';
 		}
 		if(this.getFieldValue('DURATION')!=null){
 			currentCode= currentCode + '                 "duration": " ' +this.getFieldValue("DURATION")+':'+this.getFieldValue("Unit_Time") +'" \n';
@@ -100,9 +89,8 @@ Blockly.Blocks['electrophoresis'] = {
 		if( this.getFieldValue('DURATION')!=null){
 			currentCode= currentCode + ' during ' +this.getFieldValue("DURATION") + " " + this.getFieldValue("Unit_Time")+"s" + " " ;
 		}
-		if(this.getInput('DATAREFERENCE')!=null){
-			var dataReference = Blockly.JavaScript.valueToCode(this, 'DATAREFERENCE', Blockly.JavaScript.ORDER_NONE);
-			currentCode= currentCode + ', and a dataref ' + dataReference ;
+		if(this.getFieldValue('DATAREFERENCE')!=null){
+			currentCode= currentCode + ', and a dataref ' +this.getFieldValue("DATAREFERENCE") ;
 		}
 		return currentCode;
 	}

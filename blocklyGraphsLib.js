@@ -1,20 +1,3 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politécnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file This file is used for translating the  blockly blocks to graphs.
- * @author Vishal Gupta, Jesús Irimia, Iván Pau, Alfonso Rodríguez-Patón, Ángel Panizo <contactLIAUPM@gmail.com>
- */
-
 var parentGroupControl = null; //Variable to know the name of the parent (type of parent: if-while-for...)
 var parentGroupControlType = null; //Variable to know the type of input is workinf in the parent (TRUE, FALSE, DO, DOi, ELSE...)
 var parentGroupControlID = null; //Variable to store the ID of the parent block.
@@ -28,12 +11,12 @@ Blockly.Graph['controls_if'] = function (block) {
 	if (this.getParent().getFieldValue("timeOfOperation") != null) {
 		if (this.getParent().getInputTargetBlock('source').getInput('contListOption') != null) { //Switch the condition to be list or not take a name direct from the block or through tthe list of block
 			elements.edges.push({
-				data: {
-					name: "...",
-					source: renameContainerForTimingFirst(this.getParent().getInputTargetBlock('source').getInputTargetBlock("contListOptionValueNum1").getFieldValue('containerName')),
-					target: "CONTROL" + this.id,
-					faveColor: '#0000FF',
-					strength: 10
+				data : {
+					name : "...",
+					source : renameContainerForTimingFirst(this.getParent().getInputTargetBlock('source').getInputTargetBlock("contListOptionValueNum1").getFieldValue('containerName')),
+					target : "CONTROL" + this.id,
+					faveColor : '#0000FF',
+					strength : 10
 				}
 			});
 		} else {

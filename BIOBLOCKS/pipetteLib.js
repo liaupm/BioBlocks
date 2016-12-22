@@ -1,20 +1,12 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politécnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/		
-
-/**
- * @file it contains all the functions of a pipette function. It have two inputs for container block source and destination. 
- * @author Vishal Gupta, Jesús Irimia, Iván Pau, Alfonso Rodríguez-Patón, Ángel Panizo <contactLIAUPM@gmail.com>
- */
-
+/***************************************************************************************************************************************************************/
+/* Name: pipetteLib.js																																		   */
+/* Developer: Jesï¿½s Irimia																																	   */
+/* Function: it contains all the functions of a pipette function. It have two inputs for container block source and destination.                               */	
+/*																			 																				   */
+/*																																				               */
+/***************************************************************************************************************************************************************/					
+/********************************************************BLOCK PIPETTE******************************************************************************************/		
+/***************************************************************************************************************************************************************/			
 var pipetteObject = {};			
 
 Blockly.Blocks['pipette'] = {
@@ -38,19 +30,10 @@ Blockly.Blocks['pipette'] = {
 			.appendField("","pipettename");
 		
 		/*Dropdown menu to choose the behaviour of the pipette, and over all the particular displays in the container*/
-		var dropdownType = new Blockly.FieldDropdown([["transfer", "1"], ["distribute", "2"], ["consolidate", "3"]/*, ["continuous transfer", "4"]*/], function(option){
+		var dropdownType = new Blockly.FieldDropdown([["transfer", "1"], ["distribute", "2"], ["consolidate", "3"], ["continuous transfer", "4"]], function(option){
 			var pipetteType = option //We create this variable to call directly to the function(It has the same value of pipetteTypeName but, it's used only in this moment, then it is removed
-			var sourceB = this.sourceBlock_.getInputTargetBlock("source");
-			var destinationB = this.sourceBlock_.getInputTargetBlock("destination");
-
-			if (sourceB && sourceB.checkChanges) {
-				sourceB.checkChanges();
-			}
-
-			if (destinationB && destinationB.checkChanges) {
-				destinationB.checkChanges();
-			}
-			this.sourceBlock_.updateType_(pipetteType); 
+			this.sourceBlock_.updateType_(pipetteType,1); 
+			
 		});
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
@@ -59,16 +42,16 @@ Blockly.Blocks['pipette'] = {
 		this.appendValueInput("source")
 		    .setCheck("containerCheck")
 		    .setAlign(Blockly.ALIGN_RIGHT)
-		    .appendField("Container Source");
+		    .appendField("Source");
 		this.appendValueInput("destination")
 		    .setCheck("containerCheck")
 		    .setAlign(Blockly.ALIGN_RIGHT)
-		    .appendField("Container Destination");
+		    .appendField("Destination");
 		/*Other inputs*/    
 		this.appendDummyInput("timeOfOperation")
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("Time of operation")
-		    .appendField(new Blockly.FieldNumber("0"), "timeOfOperation");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "timeOfOperation");
 		this.appendDummyInput('settings')//The settings input is monitored from onchange() function
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("Settings")
@@ -81,30 +64,390 @@ Blockly.Blocks['pipette'] = {
 /************************************************************************************************************************************************************/	
 /*********************************************************FUNCTION UPDATETYPE_()*****************************************************************************/		
 /*Function which works associated with the DD menu and it is activated when there is a change in the menu*/	
-	updateType_ : function(pipetteType){
-		switch(pipetteType) {
-			case "1": //transfer (inputs types: only accept containers)
-				var sourceInput = this.getInput("source");
-				sourceInput.setCheck("containerCheck");
+	updateType_ : function(pipetteType,resetSettings){
+		
+		/*Variables to check changes*/
+		var pipetteTypeLocal = Number(pipetteType); //Transform the string variable to number
+		var blockSource; //Local variable to assign the block connected to the source of the pipette
+		var bSoType; //Type of the previous described block (SOURCE)
+		var blockDestination; //Local variable to assign the block connected to the destination of the pipette
+		var bDeType; //Type of the previous described block (Destination=
+		
+		switch(pipetteTypeLocal) {//JS function to structure better the if-else sentences
+		
+		/********************TRANSFER SOURCE*************************/
+		    case 1: 
+	            if(this.getInputTargetBlock('source') ){ //Get the block in the SOURCE input if exists
+		        	blockSource = this.getInputTargetBlock('source') 
+		        	var isList = blockSource.getInput('contListOption');//Check if it is a list
+		        	if(isList){
+			        	if(blockSource.getInput('contListOptionValueNum1')){ 
+			        		blockSource = blockSource.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	/*SEARCH FOR EACH BLOCK IF THE LIST EXISTS!!!!!*/
+		        	if(blockSource!=null){
+			        	bSoType = blockSource.getFieldValue('container_type_global')
+			        	if (bSoType > 200 ){	
+			/***<!--**************TRANSFER_SOURCE_AGAROSE*****************-->***/		
+							if ( bSoType < 300 ) {
+								this.resetSourceInputs_();
+								/*The next four sentences detach the blockSource*/
+								blockSource.setParent(null);
+								var dx = Blockly.SNAP_RADIUS * (blockSource.RTL ? -1 : 1);
+							    var dy = Blockly.SNAP_RADIUS * 2;
+							    blockSource.moveBy(dx, dy);
+							}
+			/***<!--**************TRANSFER_SOURCE_MULTIWELLPLATE*********************-->***/
+							else {this.resetSourceInputs_();}
+		        	 	}
+		     /***<!--**************TRANSFER_SOURCE_EPPENDORF*******************-->***/   	 
+		        	 	else{this.resetSourceInputs_();	}  
+		        	}
+			    }else{//If if not exits block in the input
+				    this.resetSourceInputs_();
+				}
+		/***<!--**********************************************************-->***/
+		/***<!--**************TRANSFER_DESTINATION************************-->***/	    
+		        if(this.getInputTargetBlock('destination')){ //Get the block in the DESTINATION input if exists   
+			        
+		        	blockDestination = this.getInputTargetBlock('destination')
+		        	var isList = blockDestination.getInput('contListOption'); //Check if it is a list
+		        	if(isList){
+			        	if(blockDestination.getInput('contListOptionValueNum1')){
+			        		blockDestination = blockDestination.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	if(blockDestination!=null){
+		        	bDeType = blockDestination.getFieldValue('container_type_global')
+			        	if (bDeType > 200 ){	
+				        /***<!--****************TRANSFER_DESTINATION_AGAROSE*********************-->***/			
+							/** IF TYPE IN RANGE = AGAROSE_GEL**/
+							if ( bDeType < 300 ) {
+								this.resetDestinationInputs_();
+							}
+						/***<!--*************TRANSFER_DESTINATION_MULTIWELLPLATE**************-->***/	
+							/** IF TYPE IN RANGE = MULTI WELL PLATE**/
+							else {
+								this.resetDestinationInputs_();
+							}
+	        	 		}
+	        	 /***<!--************TRANSFER_DESTINATION_EPPENDORF********************-->***/	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	else{
+			        	 	this.resetDestinationInputs_();
+		        			
+			        	} 
+		        	}    
+			    }else {
+				    this.resetDestinationInputs_();
+			    }
+		    
+			    
+		        break;
+		    /***<!--***************DISTRIBUTE***********************-->***/
+		    /***<!--**********************************************************-->***/
+		    /***<!--***************DISTRIBUTE_SOURCE********************************-->***/
+		       case 2:
+		        	if(this.getInputTargetBlock('source') ){  //Get the block in the DESTINATION input if exists  
+		        	blockSource = this.getInputTargetBlock('source') 
+		        	var isList = blockSource.getInput('contListOption');  //Check if it is a list
+		        	if(isList){
+			        	if(blockSource.getInput('contListOptionValueNum1')){
+			        		blockSource = blockSource.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	if(blockSource!=null){
+			        	bSoType = blockSource.getFieldValue('container_type_global')
+			        	if (bSoType > 200 ){	
+			/***<!--***********DISTRIBUTE_SOURCE_AGAROSE*********************-->***/		
+							/** IF TYPE IN RANGE = AGAROSE_GEL**/
+							if ( bSoType < 300 ) {
+								this.resetSourceInputs_();
+								/*The next four sentences detach the blockSource*/
+								blockSource.setParent(null);
+								var dx = Blockly.SNAP_RADIUS * (blockSource.RTL ? -1 : 1);
+							    var dy = Blockly.SNAP_RADIUS * 2;
+							    blockSource.moveBy(dx, dy);
+							}
+			/***<!--***************DISTRIBUTE_SOURCE_MULTIWELLPLATE*******************-->***/
+							/** IF TYPE IN RANGE = MULTI WELL PLATE**/
+							else {
+								
+							}
+		        	 	}
+		     /***<!--**************DISTRIBUTE_SOURCE_EPPENDORF*****************-->***/   	 	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	else{
+		        			this.resetSourceInputs_();
+			        	}  
+		        	}
+			    }else{
+				    this.resetSourceInputs_();
+			    }
+		/***<!--**********************************************************-->***/
+		/***<!--**********DISTRIBUTE_DESTINATION_***************-->***/
+				if(this.getInputTargetBlock('destination')){ //Get the block in the DESTINATION input if exists   /
+					var numberBlocks=1;
+		        	blockDestination = this.getInputTargetBlock('destination')
+		        	var isList = blockDestination.getInput('contListOption');  //Check if it is a list 
+		        	if(isList){
+			        	if(blockDestination.getInput('contListOptionValueNum1')){
+			        		numberBlocks=this.countNumberBlocks_(blockDestination);
+				        	blockDestination = blockDestination.getInputTargetBlock('contListOptionValueNum1');		
+		        		}
+		        	}
+		        	if(blockDestination!=null){
+			        	bDeType = blockDestination.getFieldValue('container_type_global')
+			        	if (bDeType > 200 ){	
+			/***<!--***********DISTRIBUTE_DESTINATION_AGAROSE********************-->***/		
+							/** IF TYPE IN RANGE = AGAROSE_GEL**/
+							if ( bDeType < 300 ) {
+								this.resetDestinationInputs_();
+							
+							}
+			/***<!--*********DISTRIBUTE_DESTINATION_MULTIWELLPLATE***********************-->***/
+							/** IF TYPE IN RANGE = MULTI WELL PLATE**/
+							else {
+								this.resetDestinationInputs_();
+								
+							}
+		        	 	}
+		     /***<!--************DISTRIBUTE_DESTINATION_EPPENDORF*******************-->***/   	 	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	else{
+			        	 	this.resetDestinationInputs_();
+			        	 	
+			        	} 
+		        	} 
+	        	}else{
+		        	 this.resetDestinationInputs_();
+			    }
+		        break;
+		    
+		    
+		    /***<!--***************CONSOLIDATE***********************-->***/
+		    /***<!--**********************************************************-->***/
+		    /***<!--***************CONSOLIDATE_SOURCE********************************-->***/
+		    case 3:
+	        	if(this.getInputTargetBlock('source') ){ 
+		        	blockSource = this.getInputTargetBlock('source') 
+		        	var numberBlocks=1;
+		        	var isList = blockSource.getInput('contListOption');
+		        	if(isList){
+						/*If it is a list we first must check that none block is agarose when are connected*/
+			        	numberBlocksInList = blockSource.getFieldValue('contListOptionValue');
+						var substring='contListOptionValueNum'
+						var j=0;
+						for(var i = 0; i<numberBlocksInList; i++){ //iterate every blocks in the list to check if any is agarose.
+				    		j++;
+				    		var string = substring+j  //create the sring valueX which is the name of each input 
+				    		if(blockSource.getInputTargetBlock(string)){
+				        		actualBlock=blockSource.getInputTargetBlock(string);
+				        		if ( actualBlock.getFieldValue('container_type_global')==201){ //If it is agarose
+						        	/*The next four sentences detach the blockSource*/
+					        		actualBlock.setParent(null);
+									var dx = Blockly.SNAP_RADIUS * (actualBlock.RTL ? -1 : 1);
+								    var dy = Blockly.SNAP_RADIUS * 2;
+								    actualBlock.moveBy(dx, dy);
+							    }
+				    		}
+						}
+						/*Finish check and detach of the agarose block*/
+			        	if(blockSource.getInput('contListOptionValueNum1')){
+				        	numberBlocks=this.countNumberBlocks_(blockSource);
+			        		blockSource = blockSource.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        		
+		        	}
+		        	if(blockSource!=null){
+			        	bSoType = blockSource.getFieldValue('container_type_global')
+			        	if (bSoType > 200 ){	
+			/***<!--***********CONSOLIDATE_SOURCE_AGAROSE*********************-->***/		
+							/** IF TYPE IN RANGE = AGAROSE_GEL**/
+							if ( bSoType < 300 ) {
+								this.resetSourceInputs_();
+								/*The next four sentences detach the blockSource*/
+								blockSource.setParent(null);
+								var dx = Blockly.SNAP_RADIUS * (blockSource.RTL ? -1 : 1);
+							    var dy = Blockly.SNAP_RADIUS * 2;
+							    blockSource.moveBy(dx, dy);
+							}
+			/***<!--***************CONSOLIDATE_SOURCE_MULTIWELLPLATE*******************-->***/
+							/** IF TYPE IN RANGE = MULTI WELL PLATE**/
+							else {
+								
+							}
+		        	 	}
+		     /***<!--**************CONSOLIDATE_SOURCE_EPPENDORF*****************-->***/   	 	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	else{
+		        			this.resetSourceInputs_();
+			        	 	
+			        	}  
+		        	}
+			    }else{
+				    this.resetSourceInputs_();
+			    }
+			    
+			    /***<!--**********************************************************-->***/
+				/***<!--**************CONSOLIDATE_DESTINATION************************-->***/	    
+		        if(this.getInputTargetBlock('destination')){ 
+			        
+		        	blockDestination = this.getInputTargetBlock('destination')
+		        	var isList = blockDestination.getInput('contListOption');
+		        	if(isList){
+			        	if(blockDestination.getInput('contListOptionValueNum1')){
+			        		blockDestination = blockDestination.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	if(blockDestination!=null){
+		        	bDeType = blockDestination.getFieldValue('container_type_global')
+			        	if (bDeType > 200 ){	
+				        /***<!--****************CONSOLIDATE_DESTINATION_AGAROSE*********************-->***/			
+							/** IF TYPE IN RANGE = AGAROSE_GEL**/
+							if ( bDeType < 300 ) {
+								this.resetDestinationInputs_();
+								/*The next four sentences detach the blockSource*/
+								blockDestination.setParent(null);
+								var dx = Blockly.SNAP_RADIUS * (blockDestination.RTL ? -1 : 1);
+							    var dy = Blockly.SNAP_RADIUS * 2;
+							    blockDestination.moveBy(dx, dy);
+							}
+						/***<!--*************CONSOLIDATE_DESTINATION_MULTIWELLPLATE**************-->***/	
+							/** IF TYPE IN RANGE = MULTI WELL PLATE**/
+							else {
+								
+							}
+	        	 		}
+	        	 /***<!--************CONSOLIDATE_DESTINATION_EPPENDORF********************-->***/	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	else{
+			        	 	this.resetDestinationInputs_();
+		        			
+			        	} 
+		        	}    
+			    }else {
+				    this.resetDestinationInputs_();
+			    }	
+	    
+		        break;
+		    /***<!--***************CONTINUOUS-TRANSFER***********************-->***/
+		    /***<!--**********************************************************-->***/
+		    /***<!--***************CONTINUOUS-TRANSFER_SOURCE********************************-->***/
+		    case 4:
+		    	if(this.getInput("pipetteTypeName0")==null){
+		    		
+		    		this.appendDummyInput("Duration_type")
+					    .setAlign(Blockly.ALIGN_RIGHT)
+					    .appendField("Duration")
+					    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "DURATION")
+					    .appendField(new Blockly.FieldDropdown([["Minutes", "minute"], ["Millisecond", "millisecond"], ["Seconds", "second"], ["Hours", "hour"]]), "Unit_Time");
+					
+					this.appendDummyInput("pipetteTypeName0")
+						.setAlign(Blockly.ALIGN_RIGHT)
+					    .appendField(new Blockly.FieldDropdown([["one to one", "1"], ["one to many", "2"], ["many to one", "3"]]), "pipetteTypeName0");
+				}    
 
-				var destinationInput = this.getInput("destination");
-				destinationInput.setCheck("containerCheck");
-				break;
-			case "2": //distribute (inputs type: s- container or list; d- container)
-				var sourceInput = this.getInput("source");
-				sourceInput.setCheck("containerCheck");
-
-				var destinationInput = this.getInput("destination");
-				destinationInput.setCheck(["containerCheck", "containerList"]);
-				break;	
-			case "3": //consolidate (input types: s- container; d- container or list)
-				var sourceInput = this.getInput("source");
-				sourceInput.setCheck(["containerCheck", "containerList"]);
-
-				var destinationInput = this.getInput("destination");
-				destinationInput.setCheck("containerCheck");
-				break;
+	            if(this.getInputTargetBlock('source') ){ //Get the block in the DESTINATION input if exists  
+		        	blockSource = this.getInputTargetBlock('source') 
+		        	var isList = blockSource.getInput('contListOption');
+		        	if(isList){    //Check if it is a list 
+			        	/*If it is a list we first must check that none block is agarose or multi well when are connected*/
+		        		numberBlocksInList = blockSource.getFieldValue('contListOptionValue');
+						var substring='contListOptionValueNum'
+						var j=0;
+						for(var i = 0; i<numberBlocksInList; i++){
+				    		j++;
+				    		var string = substring+j
+				    		if(blockSource.getInputTargetBlock(string)){
+				        		actualBlock=blockSource.getInputTargetBlock(string);
+				        		if ( actualBlock.getFieldValue('container_type_global')>200){
+						        	/*The next four sentences detach the blockSource*/
+					        		actualBlock.setParent(null);
+									var dx = Blockly.SNAP_RADIUS * (actualBlock.RTL ? -1 : 1);
+								    var dy = Blockly.SNAP_RADIUS * 2;
+								    actualBlock.moveBy(dx, dy);
+							    }
+				    		}
+						}
+			        	if(blockSource.getInput('contListOptionValueNum1')){
+			        		blockSource = blockSource.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	if(blockSource!=null){
+			        	bSoType = blockSource.getFieldValue('container_type_global')
+			        	if (bSoType > 200 ){	
+			/***<!--**************CONTINUOUS-TRANSFER_SOURCE_AGAROSE   OR   MULTIWELL*****************-->***/		
+							/** IF TYPE IN RANGE = AGAROSE_GEL   OR   MULTIWELL**/
+								//this.resetSourceInputs_();
+								blockSource.setParent(null);
+								var dx = Blockly.SNAP_RADIUS * (blockSource.RTL ? -1 : 1);
+							    var dy = Blockly.SNAP_RADIUS * 2;
+							    blockSource.moveBy(dx, dy);
+							
+		        	 	}
+		     /***<!--**************CONTINUOUS-TRANSFER_SOURCE_EPPENDORF*******************-->***/   	 	
+		        	 	/** IF TYPE IN RANGE = EPPENDORF**/
+		        	 	
+		        	 	else{
+		        			//this.resetSourceInputs_();
+			        	}  
+		        	}
+			    }else{
+				    //this.resetSourceInputs_();
+			    }  
+			      
+			    /***<!--**********************************************************-->***/
+					/***<!--**************CONTINUOUS_TRANSFER_DESTINATION************************-->***/
+			    if(this.getInputTargetBlock('destination')){ 
+			        
+		        	blockDestination = this.getInputTargetBlock('destination')
+		        	var isList = blockDestination.getInput('contListOption');
+		        	if(isList){
+			        	/*If it is a list we first must check that none block is agarose or multi well when are connected*/
+			        	numberBlocksInList = blockDestination.getFieldValue('contListOptionValue');
+						var substring='contListOptionValueNum'
+						var j=0;
+						for(var i = 0; i<numberBlocksInList; i++){
+				    		j++;
+				    		var string = substring+j
+				    		if(blockDestination.getInputTargetBlock(string)){
+				        		actualBlock=blockDestination.getInputTargetBlock(string);
+				        		if ( actualBlock.getFieldValue('container_type_global')>200){
+						        	actualBlock.setParent(null);
+									var dx = Blockly.SNAP_RADIUS * (actualBlock.RTL ? -1 : 1);
+								    var dy = Blockly.SNAP_RADIUS * 2;
+								    actualBlock.moveBy(dx, dy);
+							    }
+				    		}
+						}
+			        	if(blockDestination.getInput('contListOptionValueNum1')){
+			        		blockDestination = blockDestination.getInputTargetBlock('contListOptionValueNum1');
+		        		}
+		        	}
+		        	if(blockDestination!=null){
+		        	bDeType = blockDestination.getFieldValue('container_type_global')
+			        	if (bDeType > 200 ){
+				        	//this.resetDestinationInputs_();
+							blockDestination.setParent(null);
+							var dx = Blockly.SNAP_RADIUS * (blockDestination.RTL ? -1 : 1);
+						    var dy = Blockly.SNAP_RADIUS * 2;
+						    blockDestination.moveBy(dx, dy);
+					    }
+				    }
+			    }else{/**this.resetDestinationInputs_();**/}
+		    
+		 
+		        break; 
+		    default:
+		        alert("There was a problem in the pipette");
 		}
+		if(resetSettings){
+		    this.setFieldValue('FALSE','setting_check_box');
+	    }
+	
+			
 	},
 			
 /***<!--***************************************************************************************************************************************************	-->**/					
@@ -171,13 +514,88 @@ Blockly.Blocks['pipette'] = {
 /***<!--***************************************************************************************************************************************************	-->**/					
 /***<!--***************************************************************************************************************************************************	-->**/	
 	onchange: function() {
-		/*if(blockSource != null && blockDestination!=null){
+		
+		this.updateArrayObject_();//Update the array 
+		
+		/***<!--**********UPDATE SETTINGS***************-->*****/
+		var updateForList=0; //Boolean to check if the local context of the pipette require chnage it shape, detach, or some action.
+		
+		if( this.getFieldValue('setting_check_box')=='TRUE'){ //Check boz of settings is true
+			if(this.getInput('settings1')==null  &&  this.getInput('settings2')==null){ //It doesn't already exists the input the create it.
+				this.displaySettings_();
+			}
+		}else{	//If it's false, check that there is not the input, or remove it if it exists.				
+			if(this.getInput('settings1')!=null){
+				this.removeInput('settings1');
+			}
+			if(this.getInput('settings2')!=null){
+				this.removeInput('settings2');
+			}
+		}
+		
+		/***<!--**********CHECK CHANGES IN SOURCE******-->*****/
+		blockSource = this.getInputTargetBlock('source') //Get the block set in the source
+    	if(blockSource!=null){
+			var isList1 = blockSource.getInput('contListOption');
+        	if(isList1){ //Check if it is a list
+	        	if (this.getFieldValue('pipetteTypeName')==1 || this.getFieldValue('pipetteTypeName')==2 || (this.getFieldValue('pipetteTypeName')==4 && ((this.getFieldValue('pipetteTypeName0')==1 || this.getFieldValue('pipetteTypeName0')==2)))){
+		        	//If it is transfer, distribute or continuous transfer (and one in source) detach the list.
+		        	//The next four sentences are for removing the block source
+		        	blockSource.setParent(null);
+					var dx = Blockly.SNAP_RADIUS * (blockSource.RTL ? -1 : 1);
+				    var dy = Blockly.SNAP_RADIUS * 2;
+				    blockSource.moveBy(dx, dy);
+			    }else if(blockSource.getInput('contListOptionValueNum1')){ //if it is consolidate or continuos transfer (and option many)
+		        	numberBlocksSource=this.countNumberBlocks_(blockSource); //Count the real number of blocks.
+	        		blockSource = blockSource.getInputTargetBlock('contListOptionValueNum1');
+        		}
+        	}
+        	if(blockSource!=null){
+        		var typeSource = blockSource.getFieldValue('container_type_global');
+    		}else{typeSource=0}
+    	}else{typeSource=0;numberBlocksSource=0;}
+    	
+    	/***<!--**********CHECK CHANGES IN DESTINATION******-->*****/
+		blockDestination = this.getInputTargetBlock('destination') //Get the block set in the destination
+    	if (blockDestination!=null){
+			var isList2 = blockDestination.getInput('contListOption');
+        	if(isList2){//Check if it is a list
+	        	if (this.getFieldValue('pipetteTypeName')==1 || this.getFieldValue('pipetteTypeName')==3 || (this.getFieldValue('pipetteTypeName')==4 && ((this.getFieldValue('pipetteTypeName0')==1 || this.getFieldValue('pipetteTypeName0')==3)))){
+		        	//If it is transfer, consolidate or continuous transfer (and one in destination) detach the list.
+		        	//The next four sentences are for removing the block source
+		        	blockDestination.setParent(null);
+					var dx = Blockly.SNAP_RADIUS * (blockDestination.RTL ? -1 : 1);
+				    var dy = Blockly.SNAP_RADIUS * 2;
+				    blockDestination.moveBy(dx, dy);
+			    }else if(blockDestination.getInput('contListOptionValueNum1')){ //if it is distribute or continuos transfer (and option many)
+		        	numberBlocksDestination=this.countNumberBlocks_(blockDestination);
+	        		blockDestination = blockDestination.getInputTargetBlock('contListOptionValueNum1');
+        		}
+        	}
+        	if(blockDestination!=null){
+        		var typeDestination = blockDestination.getFieldValue('container_type_global');
+    		}else{typeDestination=0}
+		}else{typeDestination=0;numberBlocksDestination=0;}
+		
+		/***<!--**********UPDATING*********************-->*****/
+        if(typeSource!=this.prevTypeSource || typeDestination!=this.prevTypeDestination || this.prevnumberBlocksSource!=numberBlocksSource || this.prevnumberBlocksDestination!=numberBlocksDestination ){			        	
+			this.updateType_(this.getFieldValue('pipetteTypeName'),0);
+		}
+		this.prevTypeSource=typeSource;
+		this.prevTypeDestination=typeDestination;
+		this.prevnumberBlocksSource=numberBlocksSource;
+		this.prevnumberBlocksDestination=numberBlocksDestination;
+		
+		
+		if(blockSource != null && blockDestination!=null){
 			this.setFieldValue(+blockSource.getFieldValue("containerName") +"-"+blockDestination.getFieldValue("containerName") ,"pipettename");
 		}else if(blockSource != null){
 			this.setFieldValue(blockSource.getFieldValue("containerName"),"pipettename" );	
 		}else if(blockDestination != null){
 			this.setFieldValue(blockDestination.getFieldValue("containerName") ,"pipettename");	
-		}*/
+		}
+			
+		
 	},
 
 /***<!--******************************************************************************************************************************************************/		
@@ -230,11 +648,12 @@ Blockly.Blocks['pipette'] = {
 		var currentArray=pipetteObject[myId]; // Assigning the local array in this variable, to work with them without call it each time.
 		var container = document.createElement('mutation');//Creating a elemtn which name is "mutation" where save the parameters of the array
 		
-		if (this.getFieldValue("pipetteTypeName")) {
-			container.setAttribute("typepipette", this.getFieldValue("pipetteTypeName")); //Save the type because affect in the shape of the block (mutation)
-			toReturn = 1;
-		}
-		
+		if (this.getFieldValue("pipetteTypeName")==4){ //If type of pipette continuous transfer
+			
+			container.setAttribute("typepipette",this.getFieldValue("pipetteTypeName")); //Save the type because affect in the shape of the block (mutation)
+			container.setAttribute("typecontinuoustransfer",this.getFieldValue("pipetteTypeName0")); //Save the type of conntiuous transfer (between one-to-one, one-to-many, and many-to-one
+			toReturn=1;
+		} 
 		if(currentArray.hasOwnProperty('aspirationspeed')){ //If there is the variable in the array 
 			container.setAttribute("aspirationspeed",currentArray['aspirationspeed']); //Set in the container the value.
 			toReturn=1;
@@ -263,7 +682,7 @@ Blockly.Blocks['pipette'] = {
 		if(xmlElement.getAttribute('typepipette')!=null){ //Check if in the xml text was saved the info of pipette type continuous transfer
 			this.setFieldValue(xmlElement.getAttribute('typepipette'),"pipetteTypeName"); //Set the field of continuous transfer
 			this.updateType_(xmlElement.getAttribute('typepipette'));  //Update the shape of the block switch the continuous transfer behaviour
-			//this.setFieldValue(xmlElement.getAttribute('typecontinuoustransfer'),"pipetteTypeName0"); //Set the field o the kind of continuous transfer block
+			this.setFieldValue(xmlElement.getAttribute('typecontinuoustransfer'),"pipetteTypeName0"); //Set the field o the kind of continuous transfer block
 		}
 		if(xmlElement.getAttribute('aspirationspeed')!=null){//If there are info from settings of the thre first types.
 			var myId = this.id;//we get our id, to locate us in the global array.

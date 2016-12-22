@@ -1,19 +1,11 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politï¿½cnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file Special function of flashFreeze. Include special inputs for the electrophoresis function.
- * @author Vishal Gupta, Jesï¿½s Irimia, Ivï¿½n Pau, Alfonso Rodrï¿½guez-Patï¿½n, ï¿½ngel Panizo <contactLIAUPM@gmail.com>
- */
+/***************************************************************************************************************************************************************/
+/* Name: flashFreeze.js																																	   */
+/* Developer: Jesús Irimia																																	   */
+/* Function: Special function of flashFreeze. Include special inputs for the electrophoresis function.						                                   */	
+/*																																							   */
+/*																																				               */
+/***************************************************************************************************************************************************************/		
+/***************************************************************************************************************************************************************/
 Blockly.Blocks['flashFreeze'] = {
 	
 	init: function() {
@@ -31,19 +23,19 @@ Blockly.Blocks['flashFreeze'] = {
 		this.setTooltip('');
 		
 		this.appendValueInput("source")
-		    .setCheck(["containerCheck", "containerList"])
+		    .setCheck("containerCheck")
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("container input");
 		    
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("time of operation")
-		    .appendField(new Blockly.FieldNumber("0"), "timeOfOperation");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "timeOfOperation");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("duration")
-		    .appendField(new Blockly.FieldNumber("0"), "DURATION")
-		    .appendField(new Blockly.FieldDropdown([["Minutes", "minutes"], ["Milliseconds", "milliseconds"], ["Seconds", "seconds"], ["Hours", "hours"]]), "Unit_Time");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "DURATION")
+		    .appendField(new Blockly.FieldDropdown([["Minutes", "minute"], ["Millisecond", "millisecond"], ["Seconds", "second"], ["Hours", "hour"]]), "Unit_Time");
 		
 		            
 	},
@@ -78,12 +70,12 @@ Blockly.Blocks['flashFreeze'] = {
 		return currentCode;
 	},
 	onchange: function() {
-		/*var blockSource = this.getInputTargetBlock('source') //Get the block set in the source
+		var blockSource = this.getInputTargetBlock('source') //Get the block set in the source
     	if(blockSource!=null){
 			var isList1 = blockSource.getInput('contListOption');
         	if(isList1){ //Check if it is a list
 	        	var currentBlock
-				for(var i=1;i<blockSource.getFieldValue('contListOptionValue')+1;i++){/*Iterate over all inputs in the list
+				for(var i=1;i<blockSource.getFieldValue('contListOptionValue')+1;i++){/*Iterate over all inputs in the list*/
 					var chain='contListOptionValueNum'+i//Name of the current block
 					currentBlock = blockSource.getInputTargetBlock(chain);//Current block got with chain
 					if(currentBlock!=null){
@@ -103,7 +95,7 @@ Blockly.Blocks['flashFreeze'] = {
 				    blockSource.moveBy(dx, dy); //Move the block with the measures gotten.
 			    }
     		}
-		}*/
+		}
 	}
 };
 

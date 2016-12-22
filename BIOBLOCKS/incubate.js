@@ -1,19 +1,11 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politï¿½cnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file Special function of incubate. Include special inputs for the incubate function.
- * @author Vishal Gupta, Jesï¿½s Irimia, Ivï¿½n Pau, Alfonso Rodrï¿½guez-Patï¿½n, ï¿½ngel Panizo <contactLIAUPM@gmail.com>
- */
+/***************************************************************************************************************************************************************/
+/* Name: incubate.js																																	   */
+/* Developer: Jesús Irimia																																	   */
+/* Function: Special function of incubate. Include special inputs for the incubate function.						                                   */	
+/*																																							   */
+/*																																				               */
+/***************************************************************************************************************************************************************/		
+/***************************************************************************************************************************************************************/
 Blockly.Blocks['incubate'] = {
 	
 	init: function() {
@@ -30,32 +22,32 @@ Blockly.Blocks['incubate'] = {
 		this.setTooltip('');
 		
 		this.appendValueInput("source")
-		    .setCheck(["containerCheck", "containerList"])
+		    .setCheck("containerCheck")
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("container input");
 		    
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("time of operation")
-		    .appendField(new Blockly.FieldNumber("0"), "timeOfOperation");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "timeOfOperation");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("temperature")
-		    .appendField(new Blockly.FieldNumber("0"), "TEMPERATURE")
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "TEMPERATURE")
 		    .appendField(new Blockly.FieldDropdown([["Celsius", "celsius"], ["Kelvin", "kelvin"]]), "Unit_Temp");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("duration")
-		    .appendField(new Blockly.FieldNumber("0"), "DURATION")
-		    .appendField(new Blockly.FieldDropdown([["Minutes", "minutes"], ["Milliseconds", "milliseconds"], ["Seconds", "seconds"], ["Hours", "hours"]]), "Unit_Time");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "DURATION")
+		    .appendField(new Blockly.FieldDropdown([["Minutes", "minute"], ["Millisecond", "millisecond"], ["Seconds", "second"], ["Hours", "hour"]]), "Unit_Time");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("shaking speed")
-		    .appendField(new Blockly.FieldNumber("0"), "SHAKINGSPEED");  
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "SHAKINGSPEED");  
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("CO2 percent")
-		    .appendField(new Blockly.FieldNumber("0"), "C02PERCENT");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "C02PERCENT");
 		            
 	},
 	

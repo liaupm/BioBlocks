@@ -1,19 +1,11 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politécnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file Special function of electrophoresis. Include special inputs for the electrophoresis function.
- * @author Vishal Gupta, Jesús Irimia, Iván Pau, Alfonso Rodríguez-Patón, Ángel Panizo <contactLIAUPM@gmail.com>
- */
+/***************************************************************************************************************************************************************/
+/* Name: oligosynthesize.js																																	   */
+/* Developer: Jesús Irimia																																	   */
+/* Function: Special function of electrophoresis. Include special inputs for the electrophoresis function.						                                   */	
+/*																																							   */
+/*																																				               */
+/***************************************************************************************************************************************************************/		
+/***************************************************************************************************************************************************************/
 Blockly.Blocks['oligosynthesize'] = {
 	
 	init: function() {
@@ -38,7 +30,7 @@ Blockly.Blocks['oligosynthesize'] = {
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("time of operation")
-		    .appendField(new Blockly.FieldNumber("0"), "timeOfOperation");
+		    .appendField(new Blockly.FieldTextInput("0", Blockly.FieldTextInput.numberValidator), "timeOfOperation");
 		this.appendDummyInput()
 		    .setAlign(Blockly.ALIGN_RIGHT)
 		    .appendField("destination")
@@ -103,12 +95,12 @@ Blockly.Blocks['oligosynthesize'] = {
 		return currentCode;
 	},
 	onchange: function() {
-		/*var blockSource = this.getInputTargetBlock('source') //Get the block set in the source
+		var blockSource = this.getInputTargetBlock('source') //Get the block set in the source
     	if(blockSource!=null){
 			var isList1 = blockSource.getInput('contListOption');
         	if(isList1){ //Check if it is a list
 	        	var currentBlock
-				for(var i=1;i<blockSource.getFieldValue('contListOptionValue')+1;i++){//Iterate over all inputs in the list
+				for(var i=1;i<blockSource.getFieldValue('contListOptionValue')+1;i++){/*Iterate over all inputs in the list*/
 					var chain='contListOptionValueNum'+i//Name of the current block
 					currentBlock = blockSource.getInputTargetBlock(chain);//Current block got with chain
 					if(currentBlock!=null){
@@ -128,7 +120,7 @@ Blockly.Blocks['oligosynthesize'] = {
 				    blockSource.moveBy(dx, dy); //Move the block with the measures gotten.
 			    }
     		}
-		}*/
+		}
 	}
 };
 

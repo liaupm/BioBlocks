@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politécnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--->
 <html> 
 <head>
 	<meta charset="utf-8">
@@ -133,33 +122,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				width: 48%;
 				height: 80%;
 				position: absolute;
-				overflow: hidden;
+				
 			}
-
-		#footer {
-    	text-align: left;
-    	position: absolute;
-    	z-index: 10;
-    	height: 3em;
-    	margin-top: -2.5em;
-			color: #111111;
-			font-size: 0.7em;
-		}
-
-		#powered {
-			text-align: right;
-			vertical-align: bottom;
-			font-size: 0.8em;
-		}
-
-		#powered a:link {
-			font-weight: bold;
-			text-decoration: none;	
-		}
-
-		#powered a:visited  {
-			color: inherit;	
-		}
 		
 	</style>
 </head>
@@ -220,24 +184,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						}, false);
 					</script>
 				</span>			
+			
+				<!--------END LOAD BUTTON FROM FILE----------------->
 			</p>
-		</td>
-		
-		<td id="powered">
-			 <p>powered by  <a href="https://developers.google.com/blockly/">Blockly</a>  and <a href="http://www.cytoscape.org/">Cytoscape</a></p>	
 		</td>
 	</tr>		
    	
-	 
+	
+	
+     
+</body>
+</html> 
 	<!--<tr> 
 		<!--Format of the application. Top line for button. The remaining space is divided in two halves. Left half for blockly, right half for codes. The code space is divided in three thirds top: JSON, center:natural language (english), bottom: graphs --->	
 		<td id="blocklyArea" width="50%" height="95%"></td> <!--Blockly area definition-->
 		
 	<td>
 		<ul class="tab">
-		  <li><a href="#" class="tablinks" onclick="openCity(event, 'JSON')">Machine Code</a></li>
-		  <li><a href="#" class="tablinks" onclick="openCity(event, 'NaturalLanguageOutput')">English Translation</a></li>
-		  <li><a href="#" class="tablinks" onclick="openCity(event, 'cy')">Protocol Workflow </a></li>
+		  <li><a href="#" class="tablinks" onclick="openCity(event, 'JSON')">Machine code</a></li>
+		  <li><a href="#" class="tablinks" onclick="openCity(event, 'NaturalLanguageOutput')">English translation</a></li>
+		  <li><a href="#" class="tablinks" onclick="openCity(event, 'cy')">Workflow graph</a></li>
 		</ul>
 	
 	
@@ -253,15 +219,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 	  <p id="codeToShow3"></p>
 	</div>
 	</td>
-	</tr>
-
-	<tr>
-		<td colspan="2"> 
-			<div id="footer">
-				<p>Copyright 2004-2016 - Lia Group</p>
-			</div>
-		</td>
-	</tr>
 
 	<!--Function to manipulate the toggeable tabs.-->
 	<script>	
@@ -380,8 +337,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 										if(boolExists==0){ <!--If it's first time appear this container's name write their info in "refs:" of JSON code.-->
 											JSONcode = JSONcode + '        "' + childrenArray[k].getFieldValue("containerName") +'": {\n';
 											JSONcode = JSONcode + '            "id": "' + childrenArray[k].getFieldValue("containerName") +'", \n';
-											//JSONcode = JSONcode + '            "volume": "' + childrenArray[k].getFieldValue("initial_volume") +'", \n';
-											JSONcode = JSONcode + '            "store": { \"where\": "' + childrenArray[k].getFieldValue("Destiny") +'" }\n        },\n';
+											JSONcode = JSONcode + '            "volume": "' + childrenArray[k].getFieldValue("initial_volume") +'", \n';
+											JSONcode = JSONcode + '            "store": ' + childrenArray[k].getFieldValue("STORE-DISCARD") +'\n        },\n';
 											childrenContainerExists[s] = childrenArray[k] <!--Include this name in the array to check if it already exists-->
 											s++;
 										}
@@ -441,7 +398,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		<!--Function which call to all the blocks and get the NATURAL_LANGUAGE code of the blocks, replace the values to print in html, and finally print them in the app-->
 			 function myOwnFunction2(){
 				Blockly.NaturalLanguage_english.addReservedWords('code');<!--Special function of blockly-->
-				var code = Blockly.NaturalLanguage_english.workspaceToCode(this.workspace);<!--Get the blocks in the workspace and use the function that give the code-->
+				var code = Blockly.NaturalLanguage_english.workspaceToCode();<!--Get the blocks in the workspace and use the function that give the code-->
 				var res = code.replace(/\n/g, "<br>"); <!--Replace "new string" value of javascript for the pertinent of html --> 
 				//var res = res.replace(/ /g, "&nbsp"); <!--Replace "space" value of javascript for the pertinent of html -->
 				document.getElementById("codeToShow2").innerHTML =  res;  <!--Set the code inside local variable "res" in the element "codeToShow2" in the code area.-->
@@ -461,7 +418,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 		 		initPositionY = 0;
 				
 				Blockly.Graph.addReservedWords('code');
-				var code = Blockly.Graph.workspaceToCode(this.workspace);<!--This function call each block to develop the graphs-->
+				var code = Blockly.Graph.workspaceToCode();<!--This function call each block to develop the graphs-->
 				
 				
 				/*<!--Function to DISPLAY GRAPHS. This function was performed by CYTOSCAPE-->*/
@@ -567,21 +524,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
    <div id="blocklyDiv" style="position: absolute"></div>
 	
    <!--Definition of the toolbox in XML code-->
-	<xml id="toolbox" style="display: none"> 
-		<category name="Organization">
+	<xml id="toolbox" style="display: none">		
+		<category name="BioBlocks">
 			<block type="experiment"></block>
 			<block type="step"></block>
-		</category>		
-		<category name="Containers">
 			<block type="container"></block>
 			<block type="containerList"></block>
-		</category>
-		<category name="Inputs">
-			<block type="math_number"></block>
-			<block type="text"></block>
-		</category>
-		<category name="Operations">
-			<!-- <block type="turbidostat"></block> -->
+			<block type="turbidostat"></block>
 	    	<block type="pipette"></block>
 			<block type="electrophoresis"></block>
 			<block type="incubate"></block>
@@ -595,8 +544,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			<block type="flashFreeze"></block>
 			<block type="mix"></block>
 			<block type="flowCitometry"></block>
+			
 		</category>
-	 <!-- <category name="Logic">
+			<category name="Logic">
 			<block type="controls_if"></block>
 			<block type="logic_compare"></block>
 			<block type="logic_operation"></block>
@@ -678,45 +628,35 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			<block type="math_random_float"></block>
 		</category>
 		
-		<category name="Variables" custom="VARIABLE" enable="false"></category>
-		<category name="Functions" custom="PROCEDURE"></category> -->
+		<category name="Variables" custom="VARIABLE"></category>
+		<category name="Functions" custom="PROCEDURE"></category>
 	</xml>
 	
-	
+	<!-This code generate a resizable application (Adaptable)- Similar to zoom,-->
 	<script>
-  var blocklyArea = document.getElementById('blocklyArea');
-  var blocklyDiv = document.getElementById('blocklyDiv');
-  var workspace = Blockly.inject('blocklyDiv',
-    {toolbox: document.getElementById('toolbox'),
-     zoom:
-         {controls: true,
-          wheel: true,
-          startScale: 1.0,
-          maxScale: 3,
-          minScale: 0.3,
-          scaleSpeed: 1.2},
-     trashcan: true});
-	 
-  var onresize = function(e) {
-    // Compute the absolute coordinates and dimensions of blocklyArea.
-    var element = blocklyArea;
-    var x = 0;
-    var y = 0;
-    do {
-      x += element.offsetLeft;
-      y += element.offsetTop;
-      element = element.offsetParent;
-    } while (element);
-    // Position blocklyDiv over blocklyArea.
-    blocklyDiv.style.left = x + 'px';
-    blocklyDiv.style.top = y + 'px';
-    blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
-    blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
-  };
-  window.addEventListener('resize', onresize, false);
-  onresize();
-  Blockly.svgResize(workspace);
-</script>
-	</table>
+		var blocklyArea = document.getElementById('blocklyArea');
+		var blocklyDiv = document.getElementById('blocklyDiv');
+		var workspace = Blockly.inject(blocklyDiv,{toolbox: document.getElementById('toolbox')});
+		var onresize = function(e) {
+			// Compute the absolute coordinates and dimensions of blocklyArea.
+			var element = blocklyArea;
+			var x = 0;
+			var y = 0;
+			do {
+				x += element.offsetLeft;
+				y += element.offsetTop;
+				element = element.offsetParent;
+			} while (element);
+			// Position blocklyDiv over blocklyArea.
+			blocklyDiv.style.left = x + 'px';
+			blocklyDiv.style.top = y + 'px';
+			blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+			blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+		};
+		window.addEventListener('resize', onresize, false);
+		onresize();
+	</script>
+	
+	
   </body>
 </html>

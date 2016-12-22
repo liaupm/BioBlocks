@@ -1,20 +1,3 @@
-/*
-The MIT License (MIT)
-
-Copyright (c) 2016 Universidad Politécnica de Madrid
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-/**
- * @file This block is used for translating the BioBlocks to English.
- * @author Vishal Gupta, Jesús Irimia, Iván Pau, Alfonso Rodríguez-Patón, Ángel Panizo <contactLIAUPM@gmail.com>
- */
-
 /**********************************************************************************************************/
 /**********************************************************************************************************/
 /***************************************OPERATIONAL REGULAR FUNCTION***************************************/
@@ -61,39 +44,14 @@ regularNaturalLanguageTranslation_ = function(code,block) {
 
 /******************************************************************************************************** */
 /**
- * Return the name of the actual equipment that does some block operation, null if that block is not an 
- * operation block
+ * Return the name of the actual equipment that does some block operation
  */
 getEquipmentName = function(block_title) {
-	var title = null;
-	if (block_title) {
-		if (block_title == "INCUBATE") {
-			title =  "Incubator";
-		} else if (block_title == "PIPETTE") {
-			title = "Pipette";
-		} else if (block_title == "ELECTROPHORESIS") {
-			title = "Electrophoresis Tank";
-		} else if (block_title == "CENTRIFUGATION") {
-			title = "Centrifuge";
-		} else if (block_title == "THERMOCYCLING") {
-			title = "Thermocycler";
-		} else if (block_title == "MEASUREMENT") {
-			title = "Mesurement Sensor";
-		} else if (block_title == "SANGER SEQUENCING") {
-			title = "Sequencer";
-		} else if (block_title == "OLIGOSYNTHESIZE") {
-			title = "Oligosynthesizer";
-		}  else if (block_title == "COLONY PICKING") {
-			title = "Colony Picker";
-		}  else if (block_title == "CELL SPREADING") {
-			title = "Cell Spreader";
-		}  else if (block_title == "FLASH FREEZE") {
-			title = "Liquid Nitrogen";
-		} else if (block_title == "FLOW CYTOMETRY") {
-			title = "Flow Cytometer";
-		}
+	if (block_title == "INCUBATE") {
+		return "Incubator";
+	} else {
+		return block_title;
 	}
-	return title;
 }
 
 /**********************************************************************************************************/
@@ -371,22 +329,13 @@ Blockly.NaturalLanguage_english['experiment'] = function(block) {
 	code = code + "\nEquipment:\n\n";
 	
 	for(var k=0;k<childrenArray.length;k++){ /*Loop for write all the equipment used (function blocks)*/
-		/*if (childrenArray.hasOwnProperty(k)){
-			if(!childrenArray[k].getFieldValue("containerName") && 
-				!childrenArray[k].getFieldValue("contListOptionValue") &&
-			 	!childrenArray[k].getFieldValue("experimentName") &&
-			 	!childrenArray[k].getFieldValue("step"))
-			 {
+		if (childrenArray.hasOwnProperty(k)){
+			if(!childrenArray[k].getFieldValue("containerName") && !childrenArray[k].getFieldValue("contListOptionValue") && !childrenArray[k].getFieldValue("experimentName")&& !childrenArray[k].getFieldValue("step") ){
 				if (!comparationArray.hasOwnProperty(childrenArray[k].getFieldValue())){
 					code = code + '- ' + getEquipmentName(childrenArray[k].getTitleValue())  +' \n';
 					comparationArray[childrenArray[k].getFieldValue()]=k;
 				}
 			}
-		}*/
-		var equipmentName = getEquipmentName(childrenArray[k].getFieldValue()); //block title
-		if (!(comparationArray.hasOwnProperty(childrenArray[k].getFieldValue())) && equipmentName) {
-			code = code + '-' + equipmentName + '\n';
-			comparationArray[childrenArray[k].getFieldValue()]=k;
 		}
 	}
 	code = code + "\nSteps:\n";
